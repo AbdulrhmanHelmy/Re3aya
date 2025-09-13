@@ -37,6 +37,7 @@ public class ProfileController {
         User user = userService.getCurrentUser();
         return switch (user.getRole().toString()) {
             case "DOCTOR" -> {
+
                 Doctor doctor = doctorRepository.findByUser(user)
                         .orElseThrow(() -> new RuntimeException("Doctor profile not found"));
                 yield ResponseEntity.ok(new API_Response("Doctor Founded", doctor));
@@ -58,7 +59,7 @@ public class ProfileController {
 
 
     @PostMapping("/img")
-    public ResponseEntity<API_Response> addProductIMG( @RequestParam("image") MultipartFile file) throws IOException {
+    public ResponseEntity<API_Response> addProductIMG(@RequestParam("image") MultipartFile file) throws IOException {
         API_Response apiResponse = new API_Response();
         ImageDto imageDto = new ImageDto(file);
         apiResponse.setData(userService.addProfileIMG(imageDto));

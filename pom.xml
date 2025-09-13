@@ -8,11 +8,11 @@
         <version>3.5.5</version>
         <relativePath/>
     </parent>
-    <groupId>com.ecommerce</groupId>
-    <artifactId>ecommerce-api</artifactId>
+    <groupId>com.re3aya</groupId>
+    <artifactId>re3aya-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ECommerce-API</name>
-    <description>E-commerce API project for online shopping</description>
+    <name>re3aya-API</name>
+    <description> API project  Hospital</description>
     <url/>
     <licenses>
         <license/>

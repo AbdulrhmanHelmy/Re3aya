@@ -1,5 +1,6 @@
 package com.re3aya.re3aya.Model.USERS;
 
+import com.re3aya.re3aya.Model.Department;
 import com.re3aya.re3aya.Model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,7 +18,9 @@ public class Assistant {
     @OneToOne
     private User user;
 
-    private String department;
+    @ManyToOne
+    private Department department;
+
     private String experience;
     private String officeNumber;
     private String workingHours;

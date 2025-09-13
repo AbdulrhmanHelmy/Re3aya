@@ -114,4 +114,8 @@ public class UserService implements IUserService {
         throw new RuntimeException("Principal is not of type User: " + principal.getClass());
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFound("User not found"));
+    }
+
 }

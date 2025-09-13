@@ -1,9 +1,13 @@
 package com.re3aya.re3aya.Model.USERS;
 
+import com.re3aya.re3aya.Model.Department;
 import com.re3aya.re3aya.Model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -15,18 +19,18 @@ public class Doctor {
     @OneToOne
     private User user;
 
+
+    @ManyToOne
+    private Department department;
+
+
     private String experience;
     private String specialization;
     private String officeNumber;
     private String workingHours;
-    private String profileImage;
-
-
-//    @OneToMany(mappedBy = "doctor")
-//    private List<Patient> patients;
-
-//    @OneToMany(mappedBy = "doctor" ,fetch = FetchType.EAGER)
-//    private List<Assistant> assistantList;
+    private Double price;
+    private Double rating;
+    private int numberOfExperienceYears;
 
 
 
