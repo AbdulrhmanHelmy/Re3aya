@@ -23,9 +23,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     private String phoneNumber;
-    private String username;
+    private String name;
     private String password;
-    private Role role=Role.PATIENT;
+    private Role role = Role.PATIENT;
     @OneToOne
     private Image profileImage;
 
@@ -49,6 +49,8 @@ public class User implements UserDetails {
 //    private Boolean isVerified = false;
 
 
+
+
     @Override
     public String getUsername() {
         return phoneNumber;
@@ -61,7 +63,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_"+role.name()));
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
 
@@ -82,7 +84,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true ;
+        return true;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.re3aya.re3aya.Service.User;
 
 import com.re3aya.re3aya.DTO.ImageDto;
+import com.re3aya.re3aya.DTO.LoginDTO;
 import com.re3aya.re3aya.DTO.UserDTO;
 import com.re3aya.re3aya.Exeption.ResourceNotFound;
 import com.re3aya.re3aya.Model.Image;
@@ -10,6 +11,7 @@ import com.re3aya.re3aya.Model.User;
 import com.re3aya.re3aya.Repository.SessionRepository;
 import com.re3aya.re3aya.Repository.UserRepository;
 import com.re3aya.re3aya.Repository.Users.PatientRepository;
+import com.re3aya.re3aya.Response.LoginResponse;
 import com.re3aya.re3aya.Service.Image.ImageService;
 import com.re3aya.re3aya.Util.JWTUtil;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,7 +46,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO Register(UserDTO userDTO) {
+    public User Register(UserDTO userDTO) {
         if (userRepository.findByPhoneNumber(userDTO.getPhoneNumber()).isPresent()) {
             throw new RuntimeException("PhoneNumber already registered");
         }
@@ -52,12 +54,34 @@ public class UserService implements IUserService {
         User user = new User();
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setUsername(userDTO.getUsername());
+        user.setName(userDTO.getUsername());
         userRepository.save(user);
         Patient patient = new Patient();
         patient.setUser(user);
         patientRepository.save(patient);
-        return userDTO;
+        return user;
+    }
+    @Override
+    public LoginResponse Login(LoginDTO userDTO) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userDTO.getPhoneNumber(), userDTO.getPassword()));
+        User user = userRepository.findByPhoneNumber(userDTO.getPhoneNumber()).orElseThrow(
+                () -> new ResourceNotFound("User Not Found"));
+//        if (!user.getIsVerified()) {
+//            throw new RuntimeException("Account is not verified");
+//        }
+
+        String token = jwtUtil.generateToken(user);
+        Session session = new Session();
+        session.setUser(user);
+        session.setToken(token);
+        session.setStartTime(LocalDateTime.now());
+        session.setEndTime(LocalDateTime.now().plusHours(24));
+        sessionRepository.save(session);
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setToken(token);
+        loginResponse.setUser(user);
+        return loginResponse;
     }
 
     @Override
@@ -78,25 +102,7 @@ public class UserService implements IUserService {
 
     }
 
-    @Override
-    public String Login(UserDTO userDTO) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userDTO.getPhoneNumber(), userDTO.getPassword()));
-        User user = userRepository.findByPhoneNumber(userDTO.getPhoneNumber()).orElseThrow(
-                () -> new ResourceNotFound("User Not Found"));
-//        if (!user.getIsVerified()) {
-//            throw new RuntimeException("Account is not verified");
-//        }
 
-        String token = jwtUtil.generateToken(user);
-        Session session = new Session();
-        session.setUser(user);
-        session.setToken(token);
-        session.setStartTime(LocalDateTime.now());
-        session.setEndTime(LocalDateTime.now().plusHours(24));
-        sessionRepository.save(session);
-        return token;
-    }
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
